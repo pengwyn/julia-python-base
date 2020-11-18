@@ -58,8 +58,9 @@ RUN cd julia-1.5.3 \
     && make -j 6 \
     && make install
 
+# In bin_overrides there is an override for julia to use a system image (when the env var COMPILED_JULIA_SYSIMAGE exists)
+ENV PATH=$APP_DIR/bin_overrides:$PATH
 RUN julia -e 'using Pkg; Pkg.add(["PyCall", "PackageCompiler"]); Pkg.precompile()'
-
 
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
     && unzip awscliv2.zip \ 
