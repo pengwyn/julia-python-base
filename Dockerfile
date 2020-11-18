@@ -15,7 +15,9 @@ RUN apt-get install -y --no-install-recommends \
     bzip2 \
     curl \
     unzip \
-    git
+    git \
+    gfortran \
+    perl
 
 
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
@@ -44,22 +46,22 @@ RUN pip3 install --no-cache-dir julia
 
 # Build our own version of julia since the binaries make it impossible to get libraries right for extension modules.
 # And also out of principle for sensible packaging good practice...
+# Note: doing this all in one go to avoid saving unnecessary files into the image since the build can be quite big
+# Note: JULIA_CPU_TARGET may not be required but it doesn't hurt so far
 RUN wget https://github.com/JuliaLang/julia/releases/download/v1.5.3/julia-1.5.3.tar.gz \
-    && tar -xvf julia-1.5.3.tar.gz
-
-RUN apt-get install -y --no-install-recommends \
-    gfortran \
-    perl
-
-RUN cd julia-1.5.3 \
+    && tar -xvf julia-1.5.3.tar.gz \
+    && cd julia-1.5.3 \
     && make O=build configure \
     && cd build \
     && echo prefix=/usr/local >> Make.user \
-    && make -j 6 \
-    && make install
+    && make -j MARCH=x86-64 JULIA_CPU_TARGET="generic;sandybridge,-xsaveopt,clone_all;haswell,-rdrnd,base(1)" VERBOSE=1 \
+    && make install \
+    && cd ../.. \
+    && rm -r julia-1.5.3 julia-1.5.3.tar.gz
 
 # In bin_overrides there is an override for julia to use a system image (when the env var COMPILED_JULIA_SYSIMAGE exists)
 ENV PATH=$APP_DIR/bin_overrides:$PATH
+COPY bin_overrides ./bin_overrides
 RUN julia -e 'using Pkg; Pkg.add(["PyCall", "PackageCompiler"]); Pkg.precompile()'
 
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
