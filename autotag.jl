@@ -6,7 +6,7 @@ m = match(r"(.*):(.*)-v[^-]*", full_tag)
 @assert m !== nothing
 
 part_tag = m[1] * ":" * m[2]
-min_tag = m[1]
+min_tag = m[1] * ":latest"
 
 @info "Creating tags" part_tag min_tag
 
