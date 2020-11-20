@@ -32,7 +32,7 @@ ENV LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$VIRTUAL_ENV/lib"
 ENV PYTHONUNBUFFERED=1
 
 RUN pip3 install --upgrade pip
-RUN pip3 install --no-cache-dir wheel
+RUN pip3 install --no-cache-dir wheel twine
 RUN pip3 install --no-cache-dir julia
 
 # Install julia
