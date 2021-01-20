@@ -17,7 +17,8 @@ RUN apt-get install -y --no-install-recommends \
     unzip \
     git \
     gfortran \
-    perl
+    perl \
+    patchelf
 
 
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
