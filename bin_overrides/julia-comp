@@ -1,7 +1,0 @@
-#!/bin/bash
-
-if [[ -n "$COMPILED_JULIA_SYSIMAGE" ]] ; then
-    flags="--sysimage=$COMPILED_JULIA_SYSIMAGE"
-fi
-
-julia --color=yes $flags "$@"

@@ -52,9 +52,6 @@ RUN wget https://github.com/JuliaLang/julia/releases/download/v1.5.3/julia-1.5.3
     && cd ../.. \
     && rm -r julia-1.5.3 julia-1.5.3.tar.gz
 
-# In bin_overrides there is an override for julia to use a system image (when the env var COMPILED_JULIA_SYSIMAGE exists)
-ENV PATH=$APP_DIR/bin_overrides:$PATH
-# COPY bin_overrides ./bin_overrides
 RUN julia -e 'using Pkg; Pkg.add(["PyCall", "PackageCompiler"]); Pkg.precompile()'
 
 # jlpkg for easier package installs (without constant registry updates)
