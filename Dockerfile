@@ -37,6 +37,9 @@ RUN pip3 install --upgrade pip
 RUN pip3 install --no-cache-dir wheel twine
 RUN pip3 install --no-cache-dir julia
 
+RUN pip3 install --no-cache-dir notebook jupyterhub jupyterlab
+RUN jupyter notebook --generate-config
+
 # Build our own version of julia since the binaries make it impossible to get libraries right for extension modules.
 # And also out of principle for sensible packaging good practice...
 # Note: doing this all in one go to avoid saving unnecessary files into the image since the build can be quite big
