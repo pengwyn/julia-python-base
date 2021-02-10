@@ -30,7 +30,7 @@ RUN ln -fs /usr/share/zoneinfo/Asia/Singapore /etc/localtime
 ENV VIRTUAL_ENV=/usr/src/app/special-venv
 RUN python3 -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
-ENV LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$VIRTUAL_ENV/lib"
+ENV LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$VIRTUAL_ENV/lib:/usr/local/lib"
 ENV PYTHONUNBUFFERED=1
 
 RUN pip3 install --upgrade pip
