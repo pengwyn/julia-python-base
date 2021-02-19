@@ -55,10 +55,11 @@ RUN wget https://github.com/JuliaLang/julia/releases/download/v1.5.3/julia-1.5.3
     && cd ../.. \
     && rm -r julia-1.5.3 julia-1.5.3.tar.gz
 
-RUN julia -e 'using Pkg; Pkg.add(["PyCall", "PackageCompiler"]); Pkg.precompile()'
-
 # jlpkg for easier package installs (without constant registry updates)
 RUN julia -e 'using Pkg; pkg"add jlpkg"; using jlpkg; jlpkg.install(destdir="/usr/local/bin")'
+
+RUN jlpkg add PyCall PackageCompiler Revise IJulia
+RUN jlpkg precompile
 
 
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
