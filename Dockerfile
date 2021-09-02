@@ -1,4 +1,8 @@
-FROM python:3.8-slim
+FROM python:pyversion-slim-bullseye
+
+ARG JULIA_VERSION
+
+RUN [ -n "$JULIA_VERSION" ]
 
 ENV APP_PATH=/usr/src/app
 WORKDIR $APP_PATH
@@ -44,16 +48,16 @@ RUN jupyter notebook --generate-config
 # And also out of principle for sensible packaging good practice...
 # Note: doing this all in one go to avoid saving unnecessary files into the image since the build can be quite big
 # Note: JULIA_CPU_TARGET may not be required but it doesn't hurt so far
-RUN wget https://github.com/JuliaLang/julia/releases/download/v1.5.3/julia-1.5.3.tar.gz \
-    && tar -xvf julia-1.5.3.tar.gz \
-    && cd julia-1.5.3 \
+RUN wget https://github.com/JuliaLang/julia/releases/download/v${JULIA_VERSION}/julia-${JULIA_VERSION}.tar.gz \
+    && tar -xvf julia-${JULIA_VERSION}.tar.gz \
+    && cd julia-${JULIA_VERSION} \
     && make O=build configure \
     && cd build \
     && echo prefix=/usr/local >> Make.user \
     && make -j MARCH=x86-64 JULIA_CPU_TARGET="generic;sandybridge,-xsaveopt,clone_all;haswell,-rdrnd,base(1)" VERBOSE=1 \
     && make install \
     && cd ../.. \
-    && rm -r julia-1.5.3 julia-1.5.3.tar.gz
+    && rm -r julia-${JULIA_VERSION} julia-${JULIA_VERSION}.tar.gz
 
 # jlpkg for easier package installs (without constant registry updates)
 RUN julia -e 'using Pkg; pkg"add jlpkg"; using jlpkg; jlpkg.install(destdir="/usr/local/bin")'
